@@ -11,6 +11,10 @@ enum unicode_names {
     SS_UC,
     SS_LC,
     EUR,
+    E_GRAVE_UC,
+    E_GRAVE_LC,
+    E_ACUTE_UC,
+    E_ACUTE_LC,
 };
 
 const uint32_t PROGMEM unicode_map[] = {
@@ -23,6 +27,10 @@ const uint32_t PROGMEM unicode_map[] = {
     [SS_UC] = 0x1E9E,
     [SS_LC] = 0x00DF,
     [EUR] = 0x20AC,
+    [E_GRAVE_UC] = 0x00C8,
+    [E_GRAVE_LC] = 0x00E8,
+    [E_ACUTE_UC] = 0x00C9,
+    [E_ACUTE_LC] = 0x00E9,
 };
 
 enum unicode_keys {
@@ -31,4 +39,6 @@ enum unicode_keys {
     KC_UE = XP(UE_LC, UE_UC),
     KC_SS = XP(SS_LC, SS_UC),
     KC_EUR = X(EUR),
+    KC_EGRV = XP(E_GRAVE_LC, E_GRAVE_UC),
+    KC_EACT = XP(E_ACUTE_LC, E_ACUTE_UC),
 };
