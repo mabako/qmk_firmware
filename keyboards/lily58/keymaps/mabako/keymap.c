@@ -135,7 +135,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
   if (!is_keyboard_left())
     return OLED_ROTATION_270;
-  return rotation;
+  return OLED_ROTATION_270;
 }
 
 // When you add source files to SRC in rules.mk, you can use functions.
@@ -151,9 +151,17 @@ const char *read_keylogs(void);
 
 bool oled_task_user(void) {
   if (!is_keyboard_left()) {
+
+    oled_set_cursor(0, 4);
+    oled_write_ln(read_keylog(), false);
+    oled_set_cursor(0, 12);
+    oled_write_ln(read_keylogs(), false);
+
+
+    oled_set_cursor(0, 0);
     switch (get_highest_layer(layer_state)) {
       case _QWERTY:
-        oled_write_ln_P(PSTR("DEF  "), false);
+        oled_write_ln_P(PSTR(" ooo "), false);
         break;
       case _RAISE:
         oled_write_ln_P(PSTR("RAISE"), false);
@@ -170,14 +178,31 @@ bool oled_task_user(void) {
       default:
         oled_write_ln_P(PSTR("?????"), false);
     }
-
-    oled_write_ln(read_keylog(), false);
-    oled_write_ln(read_keylogs(), false);
-    //oled_write_ln(read_mode_icon(keymap_config.swap_lalt_lgui), false);
-    //oled_write_ln(read_host_led_state(), false);
-    //oled_write_ln(read_timelog(), false);
   } else {
-    oled_write(read_logo(), false);
+    static const char PROGMEM logo[] = {
+      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0xc0, 0xe0, 0x40, 0x00, 0x00, 0xc0, 0xe0,
+      0xc0, 0xe0, 0x20, 0x38, 0x30, 0x38, 0x38, 0x38, 0x0c, 0x00, 0x00, 0x80, 0x00, 0x00, 0x00, 0x00,
+      0x00, 0x00, 0x00, 0x00, 0x18, 0xd0, 0xf0, 0xfc, 0x3b, 0x0f, 0x0f, 0x07, 0x03, 0x03, 0x03, 0x03,
+      0x03, 0x03, 0x06, 0x06, 0x0e, 0x0c, 0x3c, 0xfe, 0xfe, 0xe4, 0x03, 0x00, 0x80, 0x00, 0x00, 0x00,
+      0x00, 0x00, 0x00, 0x10, 0x30, 0x79, 0xff, 0xf0, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0xf0, 0x7f, 0x70, 0x30, 0x10, 0x0c, 0x00, 0x00, 0x00,
+      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x03, 0x07, 0x07, 0x0e, 0x1e, 0x1c, 0x1c, 0x1c, 0x1c,
+      0x0c, 0x0c, 0x0c, 0x1e, 0x1e, 0x07, 0x07, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    };
+
+    oled_write_raw_P(logo, sizeof(logo));
+    // wpm counter
+    uint8_t n = get_current_wpm();
+    char    wpm_str[4];
+    oled_set_cursor(1, 14);
+    wpm_str[3] = '\0';
+    wpm_str[2] = '0' + n % 10;
+    wpm_str[1] = '0' + (n /= 10) % 10;
+    wpm_str[0] = '0' + n / 10;
+    oled_write(wpm_str, false);
+
+    oled_set_cursor(0, 15);
+    oled_write(" wpm", false);
   }
     return false;
 }

@@ -11,10 +11,10 @@ SWAP_HANDS_ENABLE = no      # Enable one-hand typing
 OLED_ENABLE= yes     # OLED display
 KEY_OVERRIDE_ENABLE = yes
 UNICODEMAP_ENABLE = yes
+WPM_ENABLE = yes
 
 # If you want to change the display of OLED, you need to change here
-SRC +=  ./lib/logo_reader.c \
-        ./lib/keylogger.c \
+SRC +=  ./lib/keylogger.c \
         # ./lib/mode_icon_reader.c \
         # ./lib/host_led_state_reader.c \
         # ./lib/timelogger.c \

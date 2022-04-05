@@ -47,3 +47,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define UNICODE_SELECTED_MODES UC_WINC
 #define RETRO_TAPPING
+#define SPLIT_WPM_ENABLE
