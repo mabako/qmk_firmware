@@ -9,6 +9,12 @@ enum layer_number {
   _UMLAUT,
 };
 
+enum custom_keycodes {
+  C_SHRUG = SAFE_RANGE,
+  C_TFLIP,
+  C_TPUT,
+};
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* QWERTY
@@ -101,11 +107,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * ,-----------------------------------------.                    ,-----------------------------------------.
  * |      |      |      |   È  |      |      |                    |      |      |      |      |      |      |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
- * |      |      |      |   €  |      |      |                    |      |   Ü  |      |   Ö  |      |      |
+ * |      |      |      |   €  |      |      |                    |TFlip |   Ü  |      |   Ö  |      |      |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
- * |      |   Ä  |   ß  |   É  |      |      |-------.    ,-------|      |      |      |      |      |      |
+ * |      |   Ä  |   ß  |   É  |      |      |-------.    ,-------| TPut |      |      |      |      |      |
  * |------+------+------+------+------+------|       |    |       |------+------+------+------+------+------|
- * |      |      |      |      |      |      |-------|    |-------|      |      |      |      |      |      |
+ * |      |      |      |      |      |      |-------|    |-------|Shrug |      |      |      |      |      |
  * `-----------------------------------------/       /     \      \-----------------------------------------'
  *                   | LAlt | LGUI |LOWER | /Space  /       \Enter \  |RAISE |BackSP| RAlt |
  *                   |      |      |      |/       /         \      \ |      |      |      |
@@ -113,9 +119,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 [_UMLAUT] = LAYOUT(
   _______, _______, _______, KC_EGRV, _______, _______,                   _______, _______, _______, _______, _______, _______,
-  _______, _______, _______, KC_EUR , _______, _______,                   _______, KC_UE  , _______, KC_OE  , _______, _______,
-  _______, KC_AE  , KC_SS  , KC_EACT, _______, _______,                   _______, _______, _______, _______, _______, _______,
-  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+  _______, _______, _______, KC_EUR , _______, _______,                   C_TFLIP, KC_UE  , _______, KC_OE  , _______, _______,
+  _______, KC_AE  , KC_SS  , KC_EACT, _______, _______,                   C_TPUT,  _______, _______, _______, _______, _______,
+  _______, _______, _______, _______, _______, _______, _______, _______, C_SHRUG, _______, _______, _______, _______, _______,
                              _______, _______, _______, _______, _______, _______, _______, _______
 )};
 
@@ -128,12 +134,11 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
   if (!is_keyboard_left())
-    return OLED_ROTATION_180;  // flips the display 180 degrees if offhand
+    return OLED_ROTATION_270;
   return rotation;
 }
 
 // When you add source files to SRC in rules.mk, you can use functions.
-const char *read_layer_state(void);
 const char *read_logo(void);
 void set_keylog(uint16_t keycode, keyrecord_t *record);
 const char *read_keylog(void);
@@ -146,8 +151,26 @@ const char *read_keylogs(void);
 
 bool oled_task_user(void) {
   if (!is_keyboard_left()) {
-    // If you want to change the display of OLED, you need to change here
-    oled_write_ln(read_layer_state(), false);
+    switch (get_highest_layer(layer_state)) {
+      case _QWERTY:
+        oled_write_ln_P(PSTR("DEF  "), false);
+        break;
+      case _RAISE:
+        oled_write_ln_P(PSTR("RAISE"), false);
+        break;
+      case _LOWER:
+        oled_write_ln_P(PSTR("LOWER"), false);
+        break;
+      case _ADJUST:
+        oled_write_ln_P(PSTR("ADJST"), false);
+        break;
+      case _UMLAUT:
+        oled_write_ln_P(PSTR("UMLAU"), false);
+        break;
+      default:
+        oled_write_ln_P(PSTR("?????"), false);
+    }
+
     oled_write_ln(read_keylog(), false);
     oled_write_ln(read_keylogs(), false);
     //oled_write_ln(read_mode_icon(keymap_config.swap_lalt_lgui), false);
@@ -175,6 +198,21 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         return false;
       }
       break;
+    case C_SHRUG:
+      if (record->event.pressed) {
+        send_unicode_string("¯\\_(ツ)_/¯");
+      }
+      return false;
+    case C_TFLIP:
+      if (record->event.pressed) {
+        send_unicode_string("(┛°□°)┛ヘ┻━┻");
+      }
+      return false;
+    case C_TPUT:
+      if (record->event.pressed) {
+        send_unicode_string("┬──┬ \u30CE( ゜-゜\u30CE)");
+      }
+      return false;
   }
 
   return true;
