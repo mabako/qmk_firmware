@@ -151,14 +151,6 @@ const char *read_keylogs(void);
 
 bool oled_task_user(void) {
   if (!is_keyboard_left()) {
-
-    oled_set_cursor(0, 4);
-    oled_write_ln(read_keylog(), false);
-    oled_set_cursor(0, 12);
-    oled_write_ln(read_keylogs(), false);
-
-
-    oled_set_cursor(0, 0);
     switch (get_highest_layer(layer_state)) {
       case _QWERTY:
         oled_write_ln_P(PSTR(" ooo "), false);
@@ -178,6 +170,11 @@ bool oled_task_user(void) {
       default:
         oled_write_ln_P(PSTR("?????"), false);
     }
+
+    oled_set_cursor(0, 4);
+    oled_write_ln(read_keylog(), false);
+    oled_set_cursor(0, 12);
+    oled_write(read_keylogs(), false);
   } else {
     static const char PROGMEM logo[] = {
       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0xc0, 0xe0, 0x40, 0x00, 0x00, 0xc0, 0xe0,
