@@ -49,3 +49,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define RETRO_TAPPING
 #define SPLIT_WPM_ENABLE
 #define SPLIT_OLED_ENABLE
+#define OLED_TIMEOUT 6000
+
+#define SPLIT_TRANSACTION_IDS_USER USER_SET_CLOCK

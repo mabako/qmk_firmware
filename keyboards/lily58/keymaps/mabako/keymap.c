@@ -1,5 +1,10 @@
 #include QMK_KEYBOARD_H
+#include <string.h>
+#include "raw_hid.h"
+#include "transactions.h"
 #include "unicode.h"
+
+#define RAW_EPSIZE 32
 
 enum layer_number {
   _QWERTY = 0,
@@ -129,6 +134,9 @@ layer_state_t layer_state_set_user(layer_state_t state) {
   return update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
 }
 
+uint32_t clock_timer = 0;
+bool clock_set = false;
+
 //SSD1306 OLED update loop, make sure to enable OLED_ENABLE=yes in rules.mk
 #ifdef OLED_ENABLE
 
@@ -139,7 +147,7 @@ oled_rotation_t oled_init_user(oled_rotation_t rotation) {
 }
 
 // When you add source files to SRC in rules.mk, you can use functions.
-const char *read_logo(void);
+// const char *read_logo(void);
 void set_keylog(uint16_t keycode, keyrecord_t *record);
 const char *read_keylog(void);
 const char *read_keylogs(void);
@@ -173,8 +181,9 @@ bool oled_task_user(void) {
 
     oled_set_cursor(0, 4);
     oled_write_ln(read_keylog(), false);
-    oled_set_cursor(0, 12);
+    oled_set_cursor(0, 9);
     oled_write(read_keylogs(), false);
+
   } else {
     static const char PROGMEM logo[] = {
       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0xc0, 0xe0, 0x40, 0x00, 0x00, 0xc0, 0xe0,
@@ -188,6 +197,26 @@ bool oled_task_user(void) {
     };
 
     oled_write_raw_P(logo, sizeof(logo));
+
+    // clock
+    if (clock_set) {
+      uint32_t diff = TIMER_DIFF_32(timer_read32(), clock_timer) / 60000;
+      uint32_t hours = (diff / 60) % 24;
+      uint32_t minutes = diff % 60;
+
+      char time_str[6];
+      time_str[2] = '\0';
+      time_str[1] = '0' + minutes % 10;
+      time_str[0] = '0' + minutes / 10;
+      oled_set_cursor(3, 10);
+      oled_write(time_str, false);
+      
+      time_str[1] = '0' + hours % 10;
+      time_str[0] = '0' + hours / 10;
+      oled_set_cursor(1, 9);
+      oled_write(time_str, false);
+    }
+
     // wpm counter
     uint8_t n = get_current_wpm();
     char    wpm_str[4];
@@ -201,7 +230,7 @@ bool oled_task_user(void) {
     oled_set_cursor(0, 15);
     oled_write(" wpm", false);
   }
-    return false;
+  return false;
 }
 #endif // OLED_ENABLE
 
@@ -240,10 +269,48 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   return true;
 }
 
+void clock_set_handler(uint8_t request_size, const void* request, uint8_t response_size, void* response) {
+  clock_timer = timer_read32() - *(uint32_t*)request;
+  clock_set = true;
+}
+
+void raw_hid_receive(uint8_t *data, uint8_t length) {
+  uint8_t response[RAW_EPSIZE];
+  memset(response, 0, RAW_EPSIZE);
+
+  if(data[0] == 0x01) {
+    uint32_t ms_since_midnight = (((uint32_t)data[1] << 24) | ((uint32_t)data[2] << 16) | ((uint32_t)data[3] << 8) | (uint32_t)data[4]);
+    if (is_keyboard_left()) {
+      clock_set_handler(sizeof(ms_since_midnight), (void*)&ms_since_midnight, 0, NULL);
+    } else {
+      clock_timer = ms_since_midnight;
+      clock_set = true;
+    }
+
+    response[0] = 0x01;
+  }
+  
+  raw_hid_send(response, RAW_EPSIZE);
+}
+
+void keyboard_post_init_user(void) {
+  transaction_register_rpc(USER_SET_CLOCK, clock_set_handler);
+}
+
+void housekeeping_task_user(void) {
+  if (is_keyboard_master() && !is_keyboard_left()) {
+    if (clock_set) {
+      if (transaction_rpc_send(USER_SET_CLOCK, sizeof(clock_timer), &clock_timer)) {
+        clock_set = false;
+      }
+    }
+  }
+}
+
 const key_override_t undo_override = ko_make_basic(MOD_MASK_CTRL, KC_Y, C(KC_Z));
 const key_override_t delete_key_override = ko_make_basic(MOD_MASK_SHIFT, KC_BSPC, KC_DEL);
 const key_override_t **key_overrides = (const key_override_t *[]){
-    &undo_override,
-    &delete_key_override,
-    NULL
+  &undo_override,
+  &delete_key_override,
+  NULL
 };
