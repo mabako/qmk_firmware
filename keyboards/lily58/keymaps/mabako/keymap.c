@@ -62,7 +62,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   _______,        _______, _______, _______, _______, QK_BOOT,                   KC_INS,  KC_DEL,  KC_HOME, KC_END,  KC_PGDN, KC_PGUP,
   KC_F1,          KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,                     KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,
   LSFT_T(KC_GRV), KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC,                   KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, RSFT_T(KC_TILD),
-  KC_LCTRL,       _______, _______, _______, _______, _______, _______, _______, XXXXXXX, KC_UNDS, KC_PLUS, KC_LCBR, KC_RCBR, RCTL_T(KC_PIPE),
+  KC_LCTRL,       _______, _______, _______, _______, _______, _______, _______, XXXXXXX, KC_UNDS, KC_PLUS, KC_LCBR, KC_RCBR, RCTL_T(KC_BSLS),
                                     _______, _______, _______, _______, _______, _______, _______, _______
 ),
 /* RAISE
@@ -243,9 +243,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   }
 
   switch (keycode) {
-    case RCTL_T(KC_PIPE):
+    case RCTL_T(KC_BSLS):
       if (record->tap.count && record->event.pressed) {
-        tap_code16(KC_PIPE);
+        if (IS_LAYER_ON(_RAISE)) {
+          tap_code16(KC_BSLS);
+        } else {
+          tap_code16(S(KC_BSLS));
+        }
+        return false;
+      }
+      break;
+    case RSFT_T(KC_TILD):
+      if (record->tap.count && record->event.pressed) {
+        tap_code16(KC_TILD);
         return false;
       }
       break;
@@ -267,6 +277,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   }
 
   return true;
+}
+
+bool get_retro_tapping(uint16_t keycode, keyrecord_t *record) {
+  switch (keycode) {
+    case RCTL_T(KC_BSLS):
+    case RSFT_T(KC_TILD):
+      return false;
+    default:
+      return true;
+  }
 }
 
 void clock_set_handler(uint8_t request_size, const void* request, uint8_t response_size, void* response) {

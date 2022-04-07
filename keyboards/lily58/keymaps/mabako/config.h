@@ -46,7 +46,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #define UNICODE_SELECTED_MODES UC_WINC
-#define RETRO_TAPPING
+#define RETRO_TAPPING_PER_KEY
 #define SPLIT_WPM_ENABLE
 #define SPLIT_OLED_ENABLE
 #define OLED_TIMEOUT 6000
