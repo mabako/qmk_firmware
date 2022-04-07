@@ -329,8 +329,12 @@ void housekeeping_task_user(void) {
 
 const key_override_t undo_override = ko_make_basic(MOD_MASK_CTRL, KC_Y, C(KC_Z));
 const key_override_t delete_key_override = ko_make_basic(MOD_MASK_SHIFT, KC_BSPC, KC_DEL);
+const key_override_t rdp_home = ko_make_basic(MOD_MASK_CAG, KC_8, LCA(KC_HOME));
+const key_override_t rdp_end = ko_make_basic(MOD_MASK_CAG, KC_9, LCA(KC_END));
 const key_override_t **key_overrides = (const key_override_t *[]){
   &undo_override,
   &delete_key_override,
+  &rdp_home,
+  &rdp_end,
   NULL
 };
