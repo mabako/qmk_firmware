@@ -19,7 +19,8 @@ enum custom_keycodes {
   C_TFLIP,
   C_TPUT,
 
-  CH_TEST
+  C_ULGHT,
+  C_DLGHT,
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -83,7 +84,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 
 [_RAISE] = LAYOUT(
-  _______,       _______, _______, _______, _______, CH_TEST,                     QK_BOOT, _______, KC_MPLY, KC_MNXT, KC_PSCR, KC_PAUS,
+  _______,       _______, _______, _______, _______, _______,                     QK_BOOT, _______, KC_MPLY, KC_MNXT, KC_PSCR, KC_PAUS,
   KC_GRV,        KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                        KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    _______,
   LSFT_T(KC_F1), KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,                       KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, XXXXXXX, KC_RSFT,
   LCTL_T(KC_F7), KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,   _______, _______,  KC_PLUS, KC_MINS, KC_EQL,  KC_LBRC, KC_RBRC, RCTL_T(KC_BSLS),
@@ -106,8 +107,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_ADJUST] = LAYOUT(
   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   C_ULGHT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, C_DLGHT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                              _______, _______, _______, _______, _______,  _______, _______, _______
 ),
 /* UMLAUT
@@ -277,9 +278,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         send_unicode_string("┬──┬ \u30CE( ゜-゜\u30CE)");
       }
       return false;
-    case CH_TEST:
+    case C_ULGHT:
       if (record->event.pressed) {
-        send_hid_command(0xF1);
+        send_hid_command(0x01);
+      }
+      return false;
+    case C_DLGHT:
+      if (record->event.pressed) {
+        send_hid_command(0x02);
       }
       return false;
   }
