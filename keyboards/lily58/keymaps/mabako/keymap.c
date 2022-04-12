@@ -311,7 +311,9 @@ void raw_hid_receive(uint8_t *data, uint8_t length) {
   memset(response, 0, RAW_EPSIZE);
 
   if(data[1] == 0x01) {
-    uint32_t ms_since_midnight = (((uint32_t)data[2] << 24) | ((uint32_t)data[3] << 16) | ((uint32_t)data[4] << 8) | (uint32_t)data[5]);
+    uint32_t ms_since_midnight = (((uint32_t)data[5] << 24) | ((uint32_t)data[4] << 16) | ((uint32_t)data[3] << 8) | (uint32_t)data[2]);
+    //memcpy(&ms_since_midnight, &data[2], sizeof(ms_since_midnight));
+
     if (is_keyboard_left()) {
       clock_set_handler(sizeof(ms_since_midnight), (void*)&ms_since_midnight, 0, NULL);
     } else {
