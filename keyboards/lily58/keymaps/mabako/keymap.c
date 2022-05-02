@@ -64,8 +64,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_LOWER] = LAYOUT(
   _______,        _______, _______, _______, _______, QK_BOOT,                   KC_INS,  KC_DEL,  KC_HOME, KC_END,  KC_PGDN, KC_PGUP,
   KC_F1,          KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,                     KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,
-  LSFT_T(KC_GRV), KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC,                   KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, RSFT_T(KC_TILD),
-  KC_LCTRL,       _______, _______, _______, _______, _______, _______, _______, XXXXXXX, KC_UNDS, KC_PLUS, KC_LCBR, KC_RCBR, RCTL_T(KC_BSLS),
+  LSFT_T(KC_GRV), KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC,                   KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_TILD,
+  KC_LCTRL,       _______, _______, _______, _______, _______, _______, _______, XXXXXXX, KC_UNDS, KC_PLUS, KC_LCBR, KC_RCBR, KC_PIPE,
                                     _______, _______, _______, _______, _______, _______, _______, _______
 ),
 /* RAISE
@@ -86,8 +86,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_RAISE] = LAYOUT(
   _______,       _______, _______, _______, _______, _______,                     QK_BOOT, _______, KC_MPLY, KC_MNXT, KC_PSCR, KC_PAUS,
   KC_GRV,        KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                        KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    _______,
-  LSFT_T(KC_F1), KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,                       KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, XXXXXXX, KC_RSFT,
-  LCTL_T(KC_F7), KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,   _______, _______,  KC_PLUS, KC_MINS, KC_EQL,  KC_LBRC, KC_RBRC, RCTL_T(KC_BSLS),
+  LSFT_T(KC_F1), KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,                       KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, XXXXXXX, _______,
+  LCTL_T(KC_F7), KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,   _______, _______,  KC_PLUS, KC_MINS, KC_EQL,  KC_LBRC, KC_RBRC, KC_BSLS,
                                    _______, _______, _______,  _______, _______,  _______, _______, _______
 ),
 /* ADJUST
@@ -247,22 +247,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   }
 
   switch (keycode) {
-    case RCTL_T(KC_BSLS):
-      if (record->tap.count && record->event.pressed) {
-        if (IS_LAYER_ON(_RAISE)) {
-          tap_code16(KC_BSLS);
-        } else {
-          tap_code16(S(KC_BSLS));
-        }
-        return false;
-      }
-      break;
-    case RSFT_T(KC_TILD):
-      if (record->tap.count && record->event.pressed) {
-        tap_code16(KC_TILD);
-        return false;
-      }
-      break;
     case C_SHRUG:
       if (record->event.pressed) {
         send_unicode_string("¯\\_(ツ)_/¯");
@@ -295,9 +279,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 bool get_retro_tapping(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
-    case RCTL_T(KC_BSLS):
-    case RSFT_T(KC_TILD):
-      return false;
     default:
       return true;
   }
