@@ -264,13 +264,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   return true;
 }
 
-bool get_retro_tapping(uint16_t keycode, keyrecord_t *record) {
-  switch (keycode) {
-    default:
-      return true;
-  }
-}
-
 void clock_set_handler(uint8_t request_size, const void* request, uint8_t response_size, void* response) {
   clock_timer = timer_read32() - *(uint32_t*)request;
   clock_set = true;
