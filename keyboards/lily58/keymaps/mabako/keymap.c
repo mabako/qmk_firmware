@@ -76,7 +76,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
  * |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |-------.    ,-------| Left | Down |  Up  |Right |      |      |
  * |------+------+------+------+------+------|   [   |    |    ]  |------+------+------+------+------+------|
- * |  F7  |  F8  |  F9  | F10  | F11  | F12  |-------|    |-------|   +  |   -  |   =  |   [  |   ]  |   \  |
+ * |  F7  |  F8  |  F9  | F10  | F11  | F12  |-------|    |-------|   +  |   -  |   =  |   [  |   ]  |   |  |
  * `-----------------------------------------/       /     \      \-----------------------------------------'
  *                   | LAlt | LGUI |LOWER | /Space  /       \Enter \  |RAISE |BackSP| RAlt |
  *                   |      |      |      |/       /         \      \ |      |      |      |
@@ -87,7 +87,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   _______,       _______, _______, _______, _______, _______,                     QK_BOOT, _______, KC_MPLY, KC_MNXT, KC_PSCR, KC_PAUS,
   KC_GRV,        KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                        KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    _______,
   LSFT_T(KC_F1), KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,                       KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, XXXXXXX, _______,
-  LCTL_T(KC_F7), KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,   _______, _______,  KC_PLUS, KC_MINS, KC_EQL,  KC_LBRC, KC_RBRC, KC_BSLS,
+  LCTL_T(KC_F7), KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,   _______, _______,  KC_PLUS, KC_MINS, KC_EQL,  KC_LBRC, KC_RBRC, KC_PIPE,
                                    _______, _______, _______,  _______, _______,  _______, _______, _______
 ),
 /* ADJUST
@@ -119,7 +119,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
  * |      |   Ä  |   ß  |   É  |      |      |-------.    ,-------| TPut |      |      |      |      |      |
  * |------+------+------+------+------+------|       |    |       |------+------+------+------+------+------|
- * |      |      |      |      |      |      |-------|    |-------|Shrug |      |      |      |      |      |
+ * |      |      |      |      |      |      |-------|    |-------|Shrug |      |      |      |   \  |   |  |
  * `-----------------------------------------/       /     \      \-----------------------------------------'
  *                   | LAlt | LGUI |LOWER | /Space  /       \Enter \  |RAISE |BackSP| RAlt |
  *                   |      |      |      |/       /         \      \ |      |      |      |
@@ -129,7 +129,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   _______, _______, _______, KC_EGRV, _______, _______,                   _______, _______, _______, _______, _______, _______,
   _______, _______, _______, KC_EUR , _______, _______,                   C_TFLIP, KC_UE  , _______, KC_OE  , _______, _______,
   _______, KC_AE  , KC_SS  , KC_EACT, _______, _______,                   C_TPUT,  _______, _______, _______, _______, _______,
-  _______, _______, _______, _______, _______, _______, _______, _______, C_SHRUG, _______, _______, _______, _______, _______,
+  _______, _______, _______, _______, _______, _______, _______, _______, C_SHRUG, _______, _______, _______, KC_BSLS, KC_PIPE,
                              _______, _______, _______, _______, _______, _______, _______, _______
 )};
 
@@ -340,12 +340,12 @@ void housekeeping_task_user(void) {
 
 const key_override_t undo_override = ko_make_basic(MOD_MASK_CTRL, KC_Y, C(KC_Z));
 const key_override_t delete_key_override = ko_make_basic(MOD_MASK_SHIFT, KC_BSPC, KC_DEL);
-const key_override_t rdp_home = ko_make_basic(MOD_MASK_CAG, KC_8, LCA(KC_HOME));
-const key_override_t rdp_end = ko_make_basic(MOD_MASK_CAG, KC_9, LCA(KC_END));
+//const key_override_t rdp_home = ko_make_basic(MOD_MASK_CAG, KC_8, LCA(KC_HOME));
+//const key_override_t rdp_end = ko_make_basic(MOD_MASK_CAG, KC_9, LCA(KC_END));
 const key_override_t **key_overrides = (const key_override_t *[]){
   &undo_override,
   &delete_key_override,
-  &rdp_home,
-  &rdp_end,
+  //&rdp_home,
+  //&rdp_end,
   NULL
 };
