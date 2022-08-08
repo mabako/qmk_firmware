@@ -220,19 +220,6 @@ bool oled_task_user(void) {
       oled_set_cursor(1, 9);
       oled_write(time_str, false);
     }
-
-    // wpm counter
-    uint8_t n = get_current_wpm();
-    char    wpm_str[4];
-    oled_set_cursor(1, 14);
-    wpm_str[3] = '\0';
-    wpm_str[2] = '0' + n % 10;
-    wpm_str[1] = '0' + (n /= 10) % 10;
-    wpm_str[0] = '0' + n / 10;
-    oled_write(wpm_str, false);
-
-    oled_set_cursor(0, 15);
-    oled_write(" wpm", false);
   }
   return false;
 }
