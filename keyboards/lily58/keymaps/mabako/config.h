@@ -48,6 +48,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define UNICODE_SELECTED_MODES UC_WINC
 #define RETRO_TAPPING
 #define SPLIT_OLED_ENABLE
-#define OLED_TIMEOUT 6000
+#define OLED_TIMEOUT 15000
 
 #define SPLIT_TRANSACTION_IDS_USER USER_SET_CLOCK
